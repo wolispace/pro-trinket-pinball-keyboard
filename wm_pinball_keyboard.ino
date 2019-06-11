@@ -6,6 +6,9 @@
   For Pro Trinket (ATmega328 based Trinket) by Adafruit Industries
   Please use library TrinketKeyboard for the ATtiny85 based Trinket
   Version 1.0  2015-01-01 Initial Version derived from TrinketKeyBoardExample  Mike Barela
+  
+  https://gist.github.com/samsheffield/9b712fceb23343016e2d30f878ef352d
+  
 */
 
 #include <ProTrinketKeyboard.h>  // Ensure the library is installed
@@ -18,6 +21,16 @@ const int PIN_RIGHT_MAGNA = 9;
 const int PIN_PLUNGER = 8;
 const int PIN_START = 6;
 const int PIN_NUDGE_UP = 5;
+boolean leftFlipperOn = false;
+boolean rightFlipperOn = false;
+
+const int MAX_KEYS = 3;
+
+// Array to hold keypresses. Trinket can emulate 3 simultaneously pressed keys
+uint8_t pressedKeys[MAX_KEYS];
+
+// count how many simultanious keys we have held down 
+int keyPressCount = 0;
 
 void setup()
 {
@@ -40,6 +53,8 @@ void setup()
   digitalWrite(PIN_NUDGE_UP, HIGH);
   // remember, the buttons are active-low, they read LOW when they are not pressed
 
+
+
   // start USB stuff
   TrinketKeyboard.begin();
 }
@@ -51,40 +66,20 @@ void loop()
   // or cause a keystroke
   // if it is not, then the computer may think that the device
   // has stopped working, and give errors
+  keyPressCount = 0;
 
-  if (digitalRead(PIN_LEFT_FLIPPER) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_A);
-  }
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_LEFT_FLIPPER) == LOW) ? KEYCODE_A : 0;
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_RIGHT_FLIPPER) == LOW) ? KEYCODE_L : 0;
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_LEFT_MAGNA) == LOW) ? KEYCODE_Q : 0;
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_RIGHT_MAGNA) == LOW) ? KEYCODE_P : 0;
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_PLUNGER) == LOW) ? KEYCODE_SPACE : 0;
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_START) == LOW) ? KEYCODE_ENTER : 0;
+  pressedKeys[keyPressCount++]  = (digitalRead(PIN_NUDGE_UP) == LOW) ? KEYCODE_W : 0;
 
-  // release the last key if none of these are pressed
-  if (digitalRead(PIN_LEFT_FLIPPER) == HIGH 
-  && digitalRead(PIN_RIGHT_FLIPPER) == HIGH
-  && digitalRead(PIN_LEFT_MAGNA) == HIGH
-  && digitalRead(PIN_RIGHT_MAGNA) == HIGH
-  && digitalRead(PIN_PLUNGER) == HIGH
-  && digitalRead(PIN_START) == HIGH
-  && digitalRead(PIN_NUDGE_UP) == HIGH
-  ) {
-    TrinketKeyboard.pressKey(0, 0);
-  }
-  
-  if (digitalRead(PIN_RIGHT_FLIPPER) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_L);
-  }
-  if (digitalRead(PIN_LEFT_MAGNA) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_Q);
-  }
-  if (digitalRead(PIN_RIGHT_MAGNA) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_P);
-  }
-  if (digitalRead(PIN_PLUNGER) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_SPACE);
-  }
-  if (digitalRead(PIN_START) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_ENTER);
-  }
-  if (digitalRead(PIN_NUDGE_UP) == LOW) {
-    TrinketKeyboard.pressKey(0, KEYCODE_W);
-  }
+  // Update the keypress array and emulate
+  TrinketKeyboard.pressKey(0, pressedKeys[0], pressedKeys[1], pressedKeys[2]);
+
+  // Brief delay to more closely emulate speed of keyboard input
+  delay(50);
   
 }
