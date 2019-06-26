@@ -4,7 +4,7 @@ Emulating a keyboard for playing pinball using Adafruit Trinkey Pro
 Starting from this 
 https://learn.adafruit.com/pro-trinket-keyboard/overview
 
-Mapping keys A & L for flippers, Q & P for magna-savers, Space for plunger, Enter for Start and W for nudge up.
+Mapping keys A & L for flippers, Q & P for magna-savers, Space for plunger, Enter for Start and W for nudge up, and Esc.
 
-Unlike the example code, we have to check for none of the keypresses before we release the last key pressed.
+We can send a max of three keypresses at one time so this is what we do to get both flippers up at the same time, or a flipper and the plunger.
 
