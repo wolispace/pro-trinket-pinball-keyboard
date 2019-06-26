@@ -8,6 +8,8 @@
   Version 1.0  2015-01-01 Initial Version derived from TrinketKeyBoardExample  Mike Barela
   
   https://gist.github.com/samsheffield/9b712fceb23343016e2d30f878ef352d
+
+  https://www.ultimarc.com/ipac2.html
   
 */
 
@@ -21,6 +23,7 @@ const int PIN_RIGHT_MAGNA = 9;
 const int PIN_PLUNGER = 8;
 const int PIN_START = 6;
 const int PIN_NUDGE_UP = 5;
+const int PIN_ESC = 4;
 boolean leftFlipperOn = false;
 boolean rightFlipperOn = false;
 
@@ -42,6 +45,7 @@ void setup()
   pinMode(PIN_PLUNGER, INPUT);
   pinMode(PIN_START, INPUT);
   pinMode(PIN_NUDGE_UP, INPUT);
+  pinMode(PIN_ESC, INPUT);
 
   // setting input pins to high means turning on internal pull-up resistors
   digitalWrite(PIN_LEFT_FLIPPER, HIGH);
@@ -51,9 +55,8 @@ void setup()
   digitalWrite(PIN_PLUNGER, HIGH);
   digitalWrite(PIN_START, HIGH);
   digitalWrite(PIN_NUDGE_UP, HIGH);
+  digitalWrite(PIN_ESC, HIGH);
   // remember, the buttons are active-low, they read LOW when they are not pressed
-
-
 
   // start USB stuff
   TrinketKeyboard.begin();
@@ -68,14 +71,34 @@ void loop()
   // has stopped working, and give errors
   keyPressCount = 0;
 
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_LEFT_FLIPPER) == LOW) ? KEYCODE_A : 0;
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_RIGHT_FLIPPER) == LOW) ? KEYCODE_L : 0;
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_LEFT_MAGNA) == LOW) ? KEYCODE_Q : 0;
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_RIGHT_MAGNA) == LOW) ? KEYCODE_P : 0;
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_PLUNGER) == LOW) ? KEYCODE_SPACE : 0;
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_START) == LOW) ? KEYCODE_ENTER : 0;
-  pressedKeys[keyPressCount++]  = (digitalRead(PIN_NUDGE_UP) == LOW) ? KEYCODE_W : 0;
+  pressedKeys[0] = 0;
+  pressedKeys[1] = 0;
+  pressedKeys[2] = 0;
 
+  if ((digitalRead(PIN_LEFT_FLIPPER) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_A;
+  }
+  if ((digitalRead(PIN_RIGHT_FLIPPER) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_L;
+  }
+  if ((digitalRead(PIN_LEFT_MAGNA) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_Q;
+  }
+  if ((digitalRead(PIN_RIGHT_MAGNA) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_P;
+  }
+  if ((digitalRead(PIN_PLUNGER) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_SPACE;
+  }
+  if ((digitalRead(PIN_START) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_ENTER;
+  }
+  if ((digitalRead(PIN_NUDGE_UP) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_W;
+  }
+  if ((digitalRead(PIN_ESC) == LOW)) {
+      pressedKeys[keyPressCount++] = KEYCODE_ESC;
+  }
   // Update the keypress array and emulate
   TrinketKeyboard.pressKey(0, pressedKeys[0], pressedKeys[1], pressedKeys[2]);
 
